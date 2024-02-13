@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+</head>
+<style>
+    main{
+        background-color: pink;
+        max-width: 380px;
+        display: flex;
+        flex-wrap: wrap;
+        padding: 10px;
+        margin: auto;
+    }
+
+    main > div{
+        background-color: red;
+        /* flex-grow: 1; */
+        padding: 10px;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-style: groove;
+        border-width: 0.1;
+        border-color: rgba(0, 0, 0, 0.327);
+        border-radius: 5px;
+    }
+
+    .drag{
+        opacity: 0.3;
+    }
+
+</style>
+<body>
+    <main>
+        <!-- <div class="item">R</div> -->
+    </main>
+    <script src="./index.js"></script>
+</body>
+</html>
