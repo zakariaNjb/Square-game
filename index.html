@@ -6,39 +6,55 @@
     <title>Test</title>
 </head>
 <style>
+    body,html{
+        height:100%;
+        margin: 0px;
+    }
+
+    body{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.849);
+    }
+
     main{
-        background-color: pink;
-        max-width: 380px;
+        max-width: 532px;
         display: flex;
         flex-wrap: wrap;
-        padding: 10px;
-        margin: auto;
     }
 
     main > div{
-        background-color: red;
-        /* flex-grow: 1; */
         padding: 10px;
-        width: 50px;
-        height: 50px;
+        margin: 5px;
+        width: 40px;
+        height: 40px;
         display: flex;
         align-items: center;
         justify-content: center;
         border-style: groove;
-        border-width: 0.1;
-        border-color: rgba(0, 0, 0, 0.327);
+        border-width: 0px;
         border-radius: 5px;
     }
 
     .drag{
-        opacity: 0.3;
+        opacity: 0.1;
     }
+
 
 </style>
 <body>
-    <main>
-        <!-- <div class="item">R</div> -->
-    </main>
+    <div class="container">
+        <header>
+            hello worl
+        </header>
+        <main>
+            <!-- <div class="item">R</div> -->
+        </main>
+        <footer>
+            hello word
+        </footer>
+    </div>
     <script src="./index.js"></script>
 </body>
 </html>
