@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test</title>
+    <title>Square game</title>
 </head>
 <style>
+    
     body,html{
         height:100%;
         margin: 0px;
@@ -19,7 +20,7 @@
     }
 
     main{
-        max-width: 532px;
+        max-width: 490px;
         display: flex;
         flex-wrap: wrap;
     }
@@ -41,20 +42,53 @@
         opacity: 0.1;
     }
 
+    header,footer{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        font-size: 2em;
+    }
+
+    header span{
+        color: white;
+    }
+
+    footer > button{
+        background:none;
+        outline: none;
+        border: none;
+        border-radius: 100%;
+    }
+
+    i{
+        font-size: 2em;
+        color: white;
+    }
+
+    footer i:hover{
+        color: rgb(0, 153, 255);
+    }
 
 </style>
 <body>
     <div class="container">
         <header>
-            hello worl
+            <div>
+                <span>score:</span>
+                <span id="score">0</span>
+            </div>
+            <span>02:00</span>
         </header>
         <main>
             <!-- <div class="item">R</div> -->
         </main>
         <footer>
-            hello word
+            <button><i class="fa-solid fa-repeat"></i></button>
+            <button><i class="fa-solid fa-play"></i></button>
         </footer>
     </div>
+    <script src="https://kit.fontawesome.com/744210e36a.js" crossorigin="anonymous"></script>
     <script src="./index.js"></script>
 </body>
 </html>

@@ -1,10 +1,14 @@
 // Number of raws and columns
 const RAW=7
 const COLUMN=7
+// Total score
+let score=0
+// Counter
+let min=1
+let second=59
 
-// Create an item and add it to the main element
+// Create items and append them in the main element
 const main=document.querySelector("main")
-
 window.onload=(e)=>{
     const colors=["red","yellow","orange","blue","green","purple","chartreuse","aqua"]
     const texts=["R","Y","O","B","G","P","C","A"]
@@ -19,16 +23,12 @@ window.onload=(e)=>{
             div.setAttribute("class","item")
             div.style.backgroundColor=colors[index]
             div.innerText=texts[index]
-            // Change the opacity of the item each time dragstart is called
-            div.addEventListener("dragstart",(e)=>{
-                div.classList.add("drag")
-            })
             main.append(div)
         }  
     }
 }
 
-// This function is used to change the background color and text content between two items
+// Change the background color and text content between two items
 function changeAttributes(item1,item2){
     const color=item2.style.backgroundColor
     const text=item2.innerText
@@ -38,7 +38,7 @@ function changeAttributes(item1,item2){
     item1.innerText=text
 }
 
-// This function is used to get near by items
+// Get near by items from the top,bottom,left and right
 function checkNearByItems(target){
     // Getting the position of the target
     const targetColumn=target.getAttribute("data-column")
@@ -51,14 +51,14 @@ function checkNearByItems(target){
     let targetColumnLeft=targetColumn
     let targetColumnRight=targetColumn
     
-    //As much as there items has the same color as the target the while loop will keep running
+    // As much as there is item has the same color as the target the while loop will keep running
     let isSameColorTop=true
     let isSameColorBottom=true
     let isSameColorLeft=true
     let isSameColorRight=true
 
-    // This array will be used to store the near by items that has the same color as the target
-    let arr=new Array(target)
+    // Storing near by items that has the same color as the target
+    let arr=new Array()
 
     while(isSameColorTop || isSameColorBottom || isSameColorLeft || isSameColorRight){
         let selector=`div[data-raw="${Number(targetRawTop)-1}"][data-column="${targetColumn}"]`
@@ -102,36 +102,37 @@ function checkNearByItems(target){
     return arr
 }
 
-
-// This function is used to reorder our items
-function reorder(column){
-    let i=0
-    let j=0
-    const items=document.querySelectorAll(".item")
-    items.forEach((item)=>{
-        item.setAttribute("data-raw",i)
-        item.setAttribute("data-column",j)
-        if(j==column-1){
-            i++
-            j=0
-        }else j++
+// Smatch items that matches the selected item and calculate the final score
+function smatchItems(target){
+    const arr=checkNearByItems(target)
+    arr.forEach(item=>{
+        if(item.hasAttribute("draggable")){
+            item.removeAttribute("draggable")
+            smatchItems(item)
+            item.style.backgroundColor="black"
+            score+=5
+        }
     })
 }
+
 
 // Preventing the default behaviour while dragging over the main element
 main.addEventListener("dragover",(e)=>e.preventDefault())
 
 main.addEventListener("drop",(e)=>{
     // At this point the selected item is the only element that has the class drag
-    const selectedItem=document.querySelector(".drag")
+    const selected=document.querySelector(".drag")
     const target=e.target
 
+    // When we drag an element without starting the game we return
+    if(!selected) return
+
     // Get the position of both items selected item and target
-    const selectedItemRaw=selectedItem.getAttribute("data-raw")
-    const selectedItemColumn=selectedItem.getAttribute("data-column")
+    const selectedItemRaw=selected.getAttribute("data-raw")
+    const selectedItemColumn=selected.getAttribute("data-column")
     const targetRaw=target.getAttribute("data-raw")
     const targetColumn=target.getAttribute("data-column")
-    const selectedItemBackgroundColor=selectedItem.style.backgroundColor
+    const selectedItemBackgroundColor=selected.style.backgroundColor
     const targetBackgroundColor=target.style.backgroundColor
 
     // Make sure that we can drop the selected item only on the targets that are close to it
@@ -145,27 +146,74 @@ main.addEventListener("drop",(e)=>{
                     selectedItemBackgroundColor!=targetBackgroundColor &&
                     targetBackgroundColor!="black" && selectedItemBackgroundColor!="black"
 
-
     if(nearByRaw || nearByColumn){
-        // Exchanging the backgound color and text content between the selected item and the target
-        changeAttributes(target,selectedItem)
-        // Getting the near by items
-        const arr=checkNearByItems(target)
-        console.log(arr)
-        // Make sure that the array has more items not only the target
-        // arr.forEach(item=>item.remove())
-        if(arr.length > 1) arr.forEach(item=>item.style.backgroundColor="black")
-        // As we deleted some elements now we should reorder the remaing ones
-        reorder(COLUMN)
+        // Exchang backgound color and text content between the selected item and the target
+        changeAttributes(target,selected)
+        // Smatch items for both target and selected Items
+        smatchItems(target)
+        smatchItems(selected)
+        // Display score
+        const span=document.getElementById("score")
+        span.innerText=score
     }
 
-    // Once we drop the element we return the opacity of the selected item to one
-    selectedItem.classList.remove("drag")
+    // Return the opacity of the selected item to one after drop
+    selected.classList.remove("drag")
 })
 
+// Starting the game
+document.querySelector(".fa-play").addEventListener("click",(e)=>{
+    const button=e.target
+    // changing the icon from start to pause
+    button.classList.remove("fa-play")
+    button.classList.add("fa-pause")
+    // Adding dragstart event to the created items
+    const items=document.querySelectorAll(".item")
+    items.forEach(item=>{
+        // Changing the opacity of the item each time dragstart is called
+        item.addEventListener("dragstart",(e)=>{
+            item.classList.add("drag")
+        })
+    })
 
+    // Discount
+    setInterval(()=>{
+        if(min >= 0){
+            const span=document.querySelector("header > span")
+            span.innerText=`${min}:${second}`
+            if(second > 0)
+                second--
+            else{
+                second=59
+                min--
+            }
+        }else location.reload()
+    },1000)
+})
 
+// Restarting the game
+document.querySelector(".fa-repeat").addEventListener("click",(e)=>{
+    location.reload()
+})
 
+/*
+This function is needed to reorder our items 
+in case we want to remove the matching items
+because the raw and column attributes will 
+no longer point correctly on the position 
+of the item
 
-  
+function reorder(column){
+    let i=0
+    let j=0
+    const items=document.querySelectorAll(".item")
+    items.forEach((item)=>{
+        item.setAttribute("data-raw",i)
+        item.setAttribute("data-column",j)
+        if(j==column-1){
+            i++
+            j=0
+        }else j++
+    })
+} */
   
